@@ -7,6 +7,15 @@
 #define USLSH_TOK_BUFSIZE 64
 #define USLSH_TOK_DELIM " \t\r\n\a"
 
+#define RED   "\x1B[31m"
+#define GRN   "\x1B[32m"
+#define YEL   "\x1B[33m"
+#define BLU   "\x1B[34m"
+#define MAG   "\x1B[35m"
+#define CYN   "\x1B[36m"
+#define WHT   "\x1B[37m"
+#define RESET "\x1B[0m"
+
 // ----------------------------------- B COMMANDS -----------------------------------
 
 /*
@@ -165,17 +174,49 @@ int uslsh_execute(char **args){
 
 
 
+char *uslsh_getuser(void){
+    char *user = NULL;
+    
+    if((user = getlogin()) == NULL){
+        fprintf(stderr, "uslsh: username too large or unable to find\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return user;
+}
+
+char *uslsh_getdir(void){
+    char *dir = NULL;
+    size_t bufsize = 256;
+    
+    if(getcwd(dir, bufsize) == NULL){
+        fprintf(stderr, "uslsh: path too large or unable to find\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return dir;
+}
+
+
 void uslsh_loop(void){
     char *line;
     char **args;
     int status;
+    char *user;
+    char *dir;
 
     do{
+        user = uslsh_getuser();
+        dir = uslsh_getdir();
+        printf(YEL "%s:" RESET, user);
+        printf(BLU "%s" RESET, dir);
         printf("> ");
         line = uslsh_read_line();
         args = uslsh_split_line(line);
         status = uslsh_execute(args);
 
+        free(user);
+        free(dir);
         free(line);
         free(args);
     }while (status);
