@@ -187,7 +187,7 @@ char *uslsh_getuser(void){
 
 char *uslsh_getdir(void){
     char *dir = NULL;
-    size_t bufsize = 256;
+    size_t bufsize = 2056;
     
     if(getcwd(dir, bufsize) == NULL){
         fprintf(stderr, "uslsh: path too large or unable to find\n");
@@ -215,11 +215,12 @@ void uslsh_loop(void){
         args = uslsh_split_line(line);
         status = uslsh_execute(args);
 
-        free(user);
-        free(dir);
         free(line);
         free(args);
     }while (status);
+
+    free(user);
+    free(dir);
 }
 
 int main(int argc, char **argv){
