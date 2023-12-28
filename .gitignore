@@ -1,3 +1,6 @@
+# MacOS specific files and folders
 .DS_store
-
 uselessh.dSYM
+
+# In case of enviroments
+.env
