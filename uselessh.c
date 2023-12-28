@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 #define USLSH_TOK_BUFSIZE 64
 #define USLSH_TOK_DELIM " \t\r\n\a"
@@ -175,19 +177,19 @@ int uslsh_execute(char **args){
 
 
 char *uslsh_getuser(void){
-    char *user = NULL;
-    
-    if((user = getlogin()) == NULL){
+    struct passwd *info;
+
+    if((info = getpwuid(getuid())) == NULL){
         fprintf(stderr, "uslsh: username too large or unable to find\n");
         exit(EXIT_FAILURE);
     }
 
-    return user;
+    return info->pw_name;
 }
 
 char *uslsh_getdir(void){
-    char *dir = NULL;
     size_t bufsize = 2056;
+    char *dir = malloc(bufsize*sizeof(char));
     
     if(getcwd(dir, bufsize) == NULL){
         fprintf(stderr, "uslsh: path too large or unable to find\n");
