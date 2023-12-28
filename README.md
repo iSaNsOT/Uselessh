@@ -1,2 +1,2 @@
 # Uselessh
-Worse than existing solutions 😜
+A shell, but worse than existing solutions 🥶
